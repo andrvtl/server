@@ -1,7 +1,11 @@
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,6 +14,13 @@ public class Server {
     ServerSocket serverSocket;
     Socket clientSocket;
     int porta;
+
+    Socket socket = null;
+    InputStream is;
+    Scanner streamIn = null;
+    OutputStream os;
+    PrintWriter streamOut = null;
+    String messaggioIn, messaggioOut;
 
     public Server(int porta){
 
@@ -48,11 +59,32 @@ public class Server {
     }
 
     public void leggi(){
+        try {
+            is = socket.getInputStream();
+            streamIn = new Scanner(is);
+            System.out.println("Leggo il messaggio del client");
+            messaggioIn = streamIn.next();
+            System.out.println("Messaggio del client: " + messaggioIn);
 
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Errore nell'inizializzazione dello stream di input");
+        }
     }
 
     public void scrivi(){
+        try {
+            os = socket.getOutputStream();
+            streamOut = new PrintWriter(os);
 
+            System.out.println("Spedisco il messaggio al client");
+            messaggioOut="Ciao client! Ti aspettavo";
+            streamOut.println(messaggioOut);
+            streamOut.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Errore nell'inizializzazione dello stream di output");
+        }
     }
     
     public void chiudi(){
