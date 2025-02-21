@@ -15,7 +15,6 @@ public class Server {
     Socket clientSocket;
     int porta;
 
-    Socket socket = null;
     InputStream is;
     Scanner streamIn = null;
     OutputStream os;
@@ -60,10 +59,10 @@ public class Server {
 
     public void leggi(){
         try {
-            is = socket.getInputStream();
+            is = clientSocket.getInputStream();
             streamIn = new Scanner(is);
             System.out.println("Leggo il messaggio del client");
-            messaggioIn = streamIn.next();
+            messaggioIn = streamIn.nextLine();
             System.out.println("Messaggio del client: " + messaggioIn);
 
         } catch (IOException ex) {
@@ -74,7 +73,7 @@ public class Server {
 
     public void scrivi(){
         try {
-            os = socket.getOutputStream();
+            os = clientSocket.getOutputStream();
             streamOut = new PrintWriter(os);
 
             System.out.println("Spedisco il messaggio al client");
